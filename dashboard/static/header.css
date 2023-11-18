@@ -1,0 +1,47 @@
+/* Header Navigation Styles */
+.header-nav {
+    background-color: #f8f8f8; /* Light background for the navbar */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    display: flex;
+    justify-content: center; /* Center the navigation container */
+    padding: 10px 0;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between; /* Space between navigation and logo */
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; /* Max width for large screens, adjust as needed */
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.nav-links li {
+    margin-right: 20px; /* Spacing between navigation items */
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333; /* Color for the icons */
+    font-size: 1.5em; /* Size of icons */
+    transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.nav-links a:hover {
+    color: #007bff; /* Change color on hover */
+}
+
+.nav-logo {
+    margin-left: auto; /* Pushes the logo to the right */
+}
+
+.nav-logo img {
+    max-height: 30px; /* Adjust the size of the logo as needed */
+    width: auto; /* Maintain aspect ratio */
+}

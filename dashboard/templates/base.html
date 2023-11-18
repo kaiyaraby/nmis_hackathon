@@ -4,34 +4,42 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-	<title>NMIS Hackathon</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='header.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+    <title>NMIS Hackathon</title>
   </head>
   <body>
-    <nav>
-      <ul>
-        <li><a href="home">Home</a></li>
-		<li><a href="manual">Manual</a></li>
-        <li><a href="map">Map</a></li>
-		<li><a href="about">About</a></li>
-      </ul>
+    <nav class="header-nav">
+      <div class="nav-container">
+        <ul class="nav-links">
+          <li>
+            <a href="home"><i class="fas fa-home"></i></a>
+          </li>
+          <li>
+            <a href="map"><i class="fas fa-map"></i></a>
+          </li>
+        </ul>
+        <div class="nav-logo">
+          <img
+            src="{{ url_for('static', filename='nmis_logo.png') }}"
+            alt="NMIS Logo"
+          />
+        </div>
+      </div>
     </nav>
-	<div>
-      <img src="{{ url_for('static', filename='nmis_hackathon_logo.jpg') }}" alt="nmis_hackathon_logo" />
-	</div>
-	<h1>{% block title %}Challenge 2 - Understanding Urban Climate through Digital Twins and IoT Devices {% endblock %}</h1>
-	<div class="content">
-		<content>
-			{% block content %} {% endblock %}
-		</content>
+
+    <div class="content">
+      <content> {% block content %} {% endblock %} </content>
     </div>
-	<footer>
-	  <div class="footer-content">
-		<h3>About Us</h3>
-		<p>This website was developed by Group 2.</p>
-		<h3>Contact Us</h3>
-		<p>Email: xxxx@xxxx.uk</p>
-	  </div>
-	</footer>
   </body>
 </html>
