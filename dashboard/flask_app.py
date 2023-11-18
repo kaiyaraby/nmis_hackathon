@@ -12,6 +12,8 @@ from functools import wraps
 
 from flask import Flask, render_template, request, redirect, session, jsonify, send_file
 
+from datetime import datetime
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key1'
 
@@ -36,6 +38,10 @@ def show_maps():
         
     
     return render_template('map.html', boxes=box_properties)
+
+@app.route('/about')
+def about():
+    return render_template('home.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
