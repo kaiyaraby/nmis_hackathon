@@ -46,7 +46,7 @@ canvas.addEventListener('click', (e) => {
         const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Long);
         
         if (isPointNearLine(mouseX, mouseY, centerPixel.x, centerPixel.y, 10)) {
-            console.log(`DEBUGGING - boxeselected - ${box.Section_Name}`);
+            console.log(`DEBUGGING - boxeselected - ${box.Box_Name}`);
             
             // Highlight the selected box
             highlightSelectedbox(box)
@@ -156,15 +156,8 @@ function drawBoxes() {
 
 // Function to display box information in a table within the infoDiv
 // window.addEventListener('load', displayboxInfo);
-function displayboxInfo(box) {
-    try {
-        mode = getCurrentMode();
-        if (mode === 'maintenance' || mode === 'optimization' ){
-            return;
-        }
-    } catch{}
-    
-    console.log(`DEBUGGING - displayboxInfo - ${box.Section_Name}`);
+function displayboxInfo(box) {    
+    console.log(`DEBUGGING - displayboxInfo - ${box.Box_Name}`);
     const table = document.createElement('table');
     
     let last_inspection = {}
@@ -180,7 +173,7 @@ function displayboxInfo(box) {
 
     table.innerHTML = `
         <tr>
-            <th colspan="2">${box.Section_Name}</th>
+            <th colspan="2">${box.Box_Name}</th>
         </tr>
         <tr>
             <th colspan="2">Properties</th>
@@ -224,7 +217,7 @@ function displayboxInfo(box) {
 
 
 function setChart(box) {
-    console.log(`DEBUGGING - setChart - ${box['Section_Name']}`);
+    console.log(`DEBUGGING - setChart - ${box['Box_Name']}`);
     performance_indicators.innerHTML = "";
     
     setChartVizualizeMode(box);
@@ -282,13 +275,14 @@ function createChart(canvas_name, data_x, data_y, x_label, y_label, data_title) 
 	)};
 }
 
-function setChartVizualizeMode(box) {
-    console.log(`DEBUGGING - setChartVizualizeMode - ${box['Section_Name']}`);
+async function setChartVizualizeMode(box) {
+    console.log(`DEBUGGING - setChartVizualizeMode - ${box['Box_Name']}`);
     performance_indicators.innerHTML = "";
-    createChart('performanceChart', [], [], 'Year', '', box['Section_Name']);
+    createChart('performanceChart', [], [], 'Year', '', box['Box_Name']);
     
+    const box_data = await getBoxData(box['Box_Name']);
     
-    EDPList = Object.keys(box.inspections[0]);
+    EDPList = Object.keys(box_data[0]);
     EDPList = EDPList.filter(function(item) {return item !== "Box_Name" })
     EDPList = EDPList.filter(function(item) {return item !== "Datetime"})
     
@@ -322,10 +316,26 @@ function setChartVizualizeMode(box) {
         
         const performance_indicator = document.getElementById("indicator").value;
         
-        let dates =  box['inspections'].map(obj => obj.Datetime)//.map(date => new Date(date));
-        let performance =  box['inspections'].map(obj => obj[performance_indicator]);
+        let dates =  box_data.map(obj => obj.Datetime)//.map(date => new Date(date));
+        let performance =  box_data.map(obj => obj[performance_indicator]);
         console.log(dates);
-        createChart('performanceChart', dates, performance, 'Year', performance_indicator, box['Section_Name']);
+        createChart('performanceChart', dates, performance, 'Year', performance_indicator, box['Box_Name']);
     });
 
 };
+
+
+async function getBoxData(elementId) {
+    // Get the base URL of the current page
+    const apiUrl = window.location.origin + '/get_data/';
+    
+    // Fetch data from the Flask endpoint and return the promise
+    return fetch(apiUrl + elementId)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .catch(error => console.error('Error:', error));
+}
