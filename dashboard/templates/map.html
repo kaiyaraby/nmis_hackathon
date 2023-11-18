@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	Map
+{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+
+<map> 
+
+    <label>
+        <input type="checkbox" checked=True id="show-section-names" style="text-align: left;"> Show Names
+    </label>
+    
+    <div id="big_div">
+        <!-- MAP -->
+        <div id='map_container' class="map_container">
+            <canvas id="map_canvas" width="500px" height="400px"></canvas>
+        </div>
+        
+        <!-- Road info -->
+        <div id="box_info" class="box-info">
+        </div>
+        
+        <!-- Graph -->
+        <div id="chart-wrapper">
+            <div id='performance_indicators'></div>
+            <canvas id="performanceChart" height="70px" width="100px"></canvas>
+        </div>
+    </div>
+</map>
+
+<script>
+    // Pass the box data to the external JavaScript file
+    const boxes = {{ boxes | tojson | safe }};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+<script src="{{url_for('static', filename='map.js')}}"></script>
+
+<script>
+        // Initialize the map
+        const map = L.map('map_container').setView([55.857923, -4.248164], 14);
+                       
+        // Load a map tile layer (e.g., OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            minZoom: 10,
+            maxZoom: 16,
+            opacity: 0.3,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        // Define bounds (latitude and longitude)
+        const northEast = L.latLng(55.87, -4.22);
+        const southWest = L.latLng(55.84, -4.26);
+        const bounds = L.latLngBounds(southWest, northEast);
+
+        // Set the map's max bounds to restrict panning and zooming
+        map.setMaxBounds(bounds)
+</script>
+{% endblock %}
+	
