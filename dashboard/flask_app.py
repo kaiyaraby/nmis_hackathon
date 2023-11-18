@@ -36,7 +36,7 @@ def box_data(box_id):
     box_inpections = pd.read_csv(path_data).to_dict('records')
 
     filtered_inspections = [r for r in box_inpections if r['Box_Name'] == box_id]
-    box_data = sorted(filtered_inspections, key=lambda d: datetime.strptime(d['Datetime'], "%d/%m/%Y %H:%M"))
+    box_data = sorted(filtered_inspections, key=lambda d: datetime.strptime(d['Datetime'], "%b-%y"))
     
     return jsonify(box_data)
 
