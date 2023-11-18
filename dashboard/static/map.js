@@ -23,7 +23,7 @@ function isPointNearLine(x, y, x1, y1, tolerance = 5) {
 
 // Function to highlight the selected box
 function highlightSelectedbox(box) {
-    const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Lng);
+    const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Long);
     
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawBoxes(); // Redraw all boxes
@@ -43,7 +43,7 @@ canvas.addEventListener('click', (e) => {
 
     // Check if the click point is near any box
     for (const box of boxes) {
-        const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Lng);
+        const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Long);
         
         if (isPointNearLine(mouseX, mouseY, centerPixel.x, centerPixel.y, 10)) {
             console.log(`DEBUGGING - boxeselected - ${box.Section_Name}`);
@@ -71,7 +71,7 @@ function handleMouseMove(e) {
     // Check if the mouse is over any box
     let mouseOverbox = false;
     boxes.forEach((box) => {
-        const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Lng);
+        const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Long);
         if (isPointNearLine(mouseX, mouseY, centerPixel.x, centerPixel.y, 10)) {
             mouseOverbox = true;
         }
@@ -104,7 +104,7 @@ function handleEscapeKey(event) {
 
 //function to display the names of the boxes on canvas
 function displayboxesNames (context, box){
-    const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Lng);
+    const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Long);
     
     context.save();    
     
@@ -116,7 +116,7 @@ function displayboxesNames (context, box){
     context.font = '10px Arial';
     context.textAlign = 'center';
 
-    context.fillText(box.Section_Name, 0, 10);
+    context.fillText(box.Box_Name, 0, 10);
     
     context.restore();
 }
@@ -136,7 +136,7 @@ function drawBoxes() {
     
     boxes.forEach((box, index) => {
         // Convert latitude and longitude to pixel coordinates
-        const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Lng);
+        const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Long);
         
         // Draw dots
         const dotRadius = 5;
@@ -287,7 +287,11 @@ function setChartVizualizeMode(box) {
     performance_indicators.innerHTML = "";
     createChart('performanceChart', [], [], 'Year', '', box['Section_Name']);
     
-    EDPList = ['Temperature', 'Humidity', 'AirQuality'];
+    
+    EDPList = Object.keys(box.inspections[0]);
+    EDPList = EDPList.filter(function(item) {return item !== "Box_Name" })
+    EDPList = EDPList.filter(function(item) {return item !== "Datetime"})
+    
     
     if (performance_indicators.childElementCount > 1) {
         performance_indicators.removeChild(performance_indicators.lastChild);
@@ -318,9 +322,9 @@ function setChartVizualizeMode(box) {
         
         const performance_indicator = document.getElementById("indicator").value;
         
-        let dates =  box['inspections'].map(obj => obj.Date)//.map(date => new Date(date));
+        let dates =  box['inspections'].map(obj => obj.Datetime)//.map(date => new Date(date));
         let performance =  box['inspections'].map(obj => obj[performance_indicator]);
-        
+        console.log(dates);
         createChart('performanceChart', dates, performance, 'Year', performance_indicator, box['Section_Name']);
     });
 
