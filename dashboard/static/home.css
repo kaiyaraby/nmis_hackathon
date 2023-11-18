@@ -1,56 +1,154 @@
 /* General Page Styles */
 .home-body {
-    font-family: Arial, sans-serif; /* Change to your preferred font */
-    color: #333; /* Standard text color */
-    margin: 0;
-    padding: 0;
-    height: 100vh; /* Full viewport height */
+  font-family: Arial, sans-serif; /* Change to your preferred font */
+  color: #00122c; /* Standard text color */
+  margin: 0;
+  padding: 0;
+  height: 100vh; /* Full viewport height */
 }
 
 /* Title Styles */
 .home-title {
-    font-size: 2.5em; /* Large font size for the title */
-    font-weight: bold; /* Bold font weight */
-    color: #0047ab; /* Deep blue color, adjust as needed */
-    text-align: center; /* Center align the title */
-    margin-top: 20px; /* Spacing above the title */
-    opacity: 0; /* Start with the title invisible */
-    animation: home-fadeIn 2s ease forwards; /* Fade-in animation */
+  font-size: 2.5em; /* Large font size for the title */
+  font-weight: bold; /* Bold font weight */
+  color: #00122c; /* Deep blue color, adjust as needed */
+  text-align: center; /* Center align the title */
+  margin-top: 20px; /* Spacing above the title */
+  opacity: 0; /* Start with the title invisible */
+  animation: home-fadeIn 2s ease forwards; /* Fade-in animation */
 }
 
 /* Fade-in Animation */
 @keyframes home-fadeIn {
-    to {
-        opacity: 1; /* End with the title fully visible */
-    }
+  to {
+    opacity: 1; /* End with the title fully visible */
+  }
 }
 
 /* Image Container */
 .image-container {
+    flex: 1;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-    padding: 20px;
+    overflow: hidden; /* Hide overflow */
+    border-radius: 15px; /* Match the border-radius of the image for smooth edges */
 }
 
 /* Image Styles */
 .home-image {
-    max-width: 100%; /* Ensures image is responsive and fits in the container */
-    height: auto; /* Maintain aspect ratio */
-    border: 3px solid #0047ab; /* Blue border */
-    transition: transform 0.3s ease; /* Smooth transform on hover */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    border: 3px solid #00122c;
+    border-radius: 15px; /* Rounded corners */
+    transition: transform 0.3s ease;
+    display: block; /* Changed to block */
 }
 
 .home-image:hover {
-    transform: scale(1.1); /* Slight zoom on hover */
+  transform: scale(1.1); /* Slight zoom on hover */
 }
 
 .content-container {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: row; /* Keep side-by-side layout by default */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
     padding: 20px;
 }
+  
+  /* Responsive Layout for Narrow Screens */
+  @media (max-width: 768px) { /* Adjust the breakpoint as needed */
+    .content-container {
+      flex-direction: column; /* Stack elements vertically on narrow screens */
+    }
+  
+    .image-container, .home-bullets {
+      width: 100%; /* Full width for both elements */
+      max-width: none; /* Override any max-width settings */
+      margin: 10px 0; /* Adjust margin as needed */
+    }
+  }
+
+/* Card Styles for Bullet Points */
+.home-bullets {
+  background-color: #ffffff; /* White background for the card */
+  padding: 20px; /* Padding inside the card */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  border-radius: 8px; /* Slightly rounded corners for the card */
+  max-width: 400px; /* Maximum width of the card */
+  margin: 20px; /* Spacing around the card */
+}
+
+.home-bullets ul {
+  list-style-type: none; /* Remove default list style */
+  padding: 0;
+}
+
+.home-bullets li {
+    margin-top: 10px; /* Spacing between bullet points */
+    font-size: 2em; /* Increased font size */
+}
+
+/* Analytics Cards Container */
+.analytics-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px; /* Spacing between cards */
+    margin-top: 20px; /* Spacing from the previous content */
+  }
+  
+  /* Individual Analytics Cards */
+  .analytics-card {
+    background-color: #ffffff;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    width: 200px; /* Adjust width as needed */
+  }
+  
+  .analytics-card:hover {
+    transform: scale(1.05); /* Zoom effect on hover */
+  }
+  
+  /* Ticker Styles */
+  .ticker {
+    padding: 5px;
+    border-radius: 5px;
+    color: #ffffff;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .ticker-green {
+    background-color: #28a745; /* Green color */
+  }
+  
+  .ticker-red {
+    background-color: #dc3545; /* Red color */
+  }
+  
+  /* Responsive Layout for Analytics Cards */
+  @media (max-width: 768px) {
+    .analytics-container {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  /* Separator Bar Styles */
+.content-separator {
+    height: 4px; /* Thickness of the bar */
+    background-color: #00122c; /* Color of the bar */
+    width: 80%; /* Width of the bar */
+    margin: 20px auto; /* Center the bar and add spacing */
+    margin-top: 40px;
+    margin-bottom: 40px;
+    border-radius: 2px; /* Slightly rounded corners */
+  }
+  
+  
