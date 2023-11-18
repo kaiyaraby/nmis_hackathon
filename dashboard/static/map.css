@@ -1,0 +1,61 @@
+/* General Page Styles */
+.map-body {
+    font-family: Arial, sans-serif;
+    color: #00122c;
+    margin: 0;
+    padding: 20px; /* Add padding for better spacing */
+}
+
+/* Title Styles */
+.map-title {
+    font-size: 2em;
+    font-weight: bold;
+    color: #00122c;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Container for Map and Graphs */
+.map-container {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center items */
+    gap: 20px; /* Spacing between elements */
+}
+
+/* Checkbox Styles */
+.checkbox-container {
+    display: flex;
+    flex-direction: column; /* Stack checkboxes vertically */
+    align-items: center; /* Center checkboxes */
+    gap: 10px; /* Spacing between checkboxes */
+}
+
+/* Map Styles */
+#map_container {
+    width: 100%; /* Full width of the parent */
+    max-width: 600px; /* Max width, adjust as needed */
+    height: 400px; /* Set a fixed height */
+    margin-bottom: 20px;
+}
+
+/* Graph Container Styles */
+#chart-wrapper {
+    width: 100%;
+    max-width: 600px; /* Max width, adjust as needed */
+}
+
+/* Additional Styles for Responsiveness */
+@media (max-width: 768px) {
+    .map-container {
+        flex-direction: column;
+    }
+}
+
+/* Map Item Container */
+.map-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}

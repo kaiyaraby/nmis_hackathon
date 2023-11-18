@@ -1,119 +1,128 @@
-{% extends 'base.html' %}
-
-{% block title %}
-	Map
-{% endblock %}
-
-{% block content %}
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
-
-<map> 
+{% extends 'base.html' %} {% block title %} Map {% endblock %} {% block content
+%}
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""
+/>
+<map>
+  <div style="margin-top: 20px"></div>
+  <div class="map-item">
+    <label>
+      <input
+        type="checkbox"
+        checked="True"
+        id="show-section-names"
+        style="text-align: left"
+      />
+      Show Names
+    </label>
 
     <label>
-        <input type="checkbox" checked=True id="show-section-names" style="text-align: left;"> Show Names
+      <input type="checkbox" id="show-contour" style="text-align: left" /> Show
+      Contour
     </label>
-    
-    <label>
-        <input type="checkbox" id="show-contour" style="text-align: left;"> Show Contour
-    </label>
-    
+  </div>
+  <div class="map-item">
     <div id="big_div">
-        <!-- MAP -->
-        <div id='map_container' class="map_container">
-            <canvas id="map_canvas" width="500px" height="400px"></canvas>
-        </div>
-        
-        <!-- Road info -->
-        <div id="box_info" class="box-info">
-        </div>
-        
-        <!-- Graph -->
-        <div id="chart-wrapper">
-            <div id='performance_indicators'></div>
-            <canvas id="performanceChart" height="70px" width="100px"></canvas>
-        </div>
+      <!-- MAP -->
+      <div id="map_container" class="map_container">
+        <canvas id="map_canvas" width="500px" height="400px"></canvas>
+      </div>
+
+      <!-- Road info -->
+      <div id="box_info" class="box-info"></div>
+
+      <!-- Graph -->
+      <div id="chart-wrapper">
+        <div id="performance_indicators"></div>
+        <canvas id="performanceChart" height="70px" width="100px"></canvas>
+      </div>
     </div>
+  </div>
 </map>
 
 <script>
-    // Pass the box data to the external JavaScript file
-    const boxes = {{ boxes | tojson | safe }};
+  // Pass the box data to the external JavaScript file
+  const boxes = {{ boxes | tojson | safe }};
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-     crossorigin=""></script>
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""
+></script>
 
 <!-- Include Leaflet-Heat library -->
 <script src="https://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script>
 
 <script>
-        // Initialize the map
-        const map = L.map('map_container').setView([55.857923, -4.248164], 14);
-                       
-        // Load a map tile layer (e.g., OpenStreetMap)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            minZoom: 14,
-            maxZoom: 14,
-            opacity: 0.3,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-        
-        // Define bounds (latitude and longitude)
-        const northEast = L.latLng(55.9, -4.2);
-        const southWest = L.latLng(55.8, -4.3);
-        const bounds = L.latLngBounds(southWest, northEast);
+  // Initialize the map
+  const map = L.map("map_container").setView([55.857923, -4.248164], 14);
 
-        // Set the map's max bounds to restrict panning and zooming
-        map.setMaxBounds(bounds)
-        
-        // Example data for contour plot
-        const contourData = [
-            [55.8611666, -4.255036, 0.0459650124710456],
-            [55.8567839, -4.2542592, 0.747288532991894],
-            [55.8612746, -4.2607426, 0.283960706805857],
-            [55.8553413, -4.2579352, 0.709081097695903],
-            [55.856962, -4.2508831, 0.624699400483121],
-            [55.8596991, -4.2510207, 0.505508193246486],
-            [55.8600017, -4.2565153, 0.99282378515905],
-            [55.858949, -4.2484797, 0.63490707398358],
-            [55.8567629, -4.2578129, 0.240243434069808],
-            [55.8584965, -4.2570707, 0.395823159729074],
-            [55.8575769, -4.2471082, 0.426504701736152],
-            [55.8560143, -4.24820727, 0.978593379402183],
-            [55.8543702, -4.2540772, 0.422991022312886],
-            [55.8584154, -4.2567481, 0.391294371012047],
-            [55.8545429, -4.2503437, 0.938496260509715],
-        ];
+  // Load a map tile layer (e.g., OpenStreetMap)
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    minZoom: 14,
+    maxZoom: 14,
+    opacity: 0.3,
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
 
-        // Create an array of LatLng objects from the contourData
-        const heatData = contourData.map(point => new L.LatLng(point[0], point[1]));
-        
-        const heatLayer = L.heatLayer(heatData, { radius: 30}).addTo(map);
-        
-        // Function to toggle the visibility of the contour plot
-        function toggleContourPlot() {
-            const checkbox = document.getElementById('show-contour');
-            if (checkbox.checked) {
-                // Create a transparent heatmap layer and add it to the map
-                // If checked, add the heatmap layer to the map
-                heatLayer.addTo(map);
-            } else {
-                // If not checked, remove the heatmap layer from the map
-                map.removeLayer(heatLayer);
-            }
-        }
+  // Define bounds (latitude and longitude)
+  const northEast = L.latLng(55.9, -4.2);
+  const southWest = L.latLng(55.8, -4.3);
+  const bounds = L.latLngBounds(southWest, northEast);
 
-        // Add event listener to the checkbox
-        toggleContourPlot();
-        document.getElementById('show-contour').addEventListener('change', toggleContourPlot);
+  // Set the map's max bounds to restrict panning and zooming
+  map.setMaxBounds(bounds);
+
+  // Example data for contour plot
+  const contourData = [
+    [55.8611666, -4.255036, 0.0459650124710456],
+    [55.8567839, -4.2542592, 0.747288532991894],
+    [55.8612746, -4.2607426, 0.283960706805857],
+    [55.8553413, -4.2579352, 0.709081097695903],
+    [55.856962, -4.2508831, 0.624699400483121],
+    [55.8596991, -4.2510207, 0.505508193246486],
+    [55.8600017, -4.2565153, 0.99282378515905],
+    [55.858949, -4.2484797, 0.63490707398358],
+    [55.8567629, -4.2578129, 0.240243434069808],
+    [55.8584965, -4.2570707, 0.395823159729074],
+    [55.8575769, -4.2471082, 0.426504701736152],
+    [55.8560143, -4.24820727, 0.978593379402183],
+    [55.8543702, -4.2540772, 0.422991022312886],
+    [55.8584154, -4.2567481, 0.391294371012047],
+    [55.8545429, -4.2503437, 0.938496260509715],
+  ];
+
+  // Create an array of LatLng objects from the contourData
+  const heatData = contourData.map((point) => new L.LatLng(point[0], point[1]));
+
+  const heatLayer = L.heatLayer(heatData, { radius: 30 }).addTo(map);
+
+  // Function to toggle the visibility of the contour plot
+  function toggleContourPlot() {
+    const checkbox = document.getElementById("show-contour");
+    if (checkbox.checked) {
+      // Create a transparent heatmap layer and add it to the map
+      // If checked, add the heatmap layer to the map
+      heatLayer.addTo(map);
+    } else {
+      // If not checked, remove the heatmap layer from the map
+      map.removeLayer(heatLayer);
+    }
+  }
+
+  // Add event listener to the checkbox
+  toggleContourPlot();
+  document
+    .getElementById("show-contour")
+    .addEventListener("change", toggleContourPlot);
 </script>
 
 <script src="{{url_for('static', filename='map.js')}}"></script>
 
 {% endblock %}
-	
