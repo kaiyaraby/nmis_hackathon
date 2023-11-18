@@ -15,35 +15,25 @@ showNamesCheckbox.addEventListener('change', drawBoxes);
 
 
 // Function to check if a point (x, y) is close to a line segment defined by (x1, y1) and (x2, y2)
-function isPointNearLine(x, y, x1, y1, x2, y2, tolerance = 5) {
-    const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
-    if (length === 0) return false;
-
-    const t = ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / (length ** 2);
-
-    if (t < 0) return false; // Closest point is before the start of the segment
-    if (t > 1) return false; // Closest point is after the end of the segment
-
-    const closestX = x1 + t * (x2 - x1);
-    const closestY = y1 + t * (y2 - y1);
-
-    const distance = Math.sqrt((x - closestX) ** 2 + (y - closestY) ** 2);
+function isPointNearLine(x, y, x1, y1, tolerance = 5) {
+    const distance = Math.sqrt((x - x1) ** 2 + (y - y1) ** 2);
 
     return distance <= tolerance;
 }
 
 // Function to highlight the selected box
 function highlightSelectedbox(box) {
-    const startPixel = convertLatLngToCanvasPixel(box.yi, box.xi);
-    const endPixel = convertLatLngToCanvasPixel(box.yf, box.xf);
+    const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Long);
+    
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawBoxes(); // Redraw all boxes
-    context.strokeStyle = 'cyan';
-    context.lineWidth = box.category === 'primary' ? 5 : 4; // Adjust line width for highlight
+
+    // Draw dots
+    const dotRadius = 5;
+    context.fillStyle = 'cyan'; // Dot color
     context.beginPath();
-    context.moveTo(startPixel.x, startPixel.y);
-    context.lineTo(endPixel.x, endPixel.y);
-    context.stroke();
+    context.arc(centerPixel.x, centerPixel.y, dotRadius, 0, Math.PI * 2);
+    context.fill();
 }
 
 // Function to handle canvas click event
@@ -53,9 +43,9 @@ canvas.addEventListener('click', (e) => {
 
     // Check if the click point is near any box
     for (const box of boxes) {
-        const startPixel = convertLatLngToCanvasPixel(box.yi, box.xi);
-        const endPixel = convertLatLngToCanvasPixel(box.yf, box.xf);
-        if (isPointNearLine(mouseX, mouseY, startPixel.x, startPixel.y, endPixel.x, endPixel.y, 10)) {
+        const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Long);
+        
+        if (isPointNearLine(mouseX, mouseY, centerPixel.x, centerPixel.y, 10)) {
             console.log(`DEBUGGING - boxeselected - ${box.Section_Name}`);
             
             // Highlight the selected box
@@ -81,9 +71,8 @@ function handleMouseMove(e) {
     // Check if the mouse is over any box
     let mouseOverbox = false;
     boxes.forEach((box) => {
-        const startPixel = convertLatLngToCanvasPixel(box.yi, box.xi);
-        const endPixel = convertLatLngToCanvasPixel(box.yf, box.xf);
-        if (isPointNearLine(mouseX, mouseY, startPixel.x, startPixel.y, endPixel.x, endPixel.y, 10)) {
+        const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Long);
+        if (isPointNearLine(mouseX, mouseY, centerPixel.x, centerPixel.y, 10)) {
             mouseOverbox = true;
         }
     });
@@ -115,30 +104,19 @@ function handleEscapeKey(event) {
 
 //function to display the names of the boxes on canvas
 function displayboxesNames (context, box){
-    const startPixel = convertLatLngToCanvasPixel(box.yi, box.xi);
-    const endPixel = convertLatLngToCanvasPixel(box.yf, box.xf);
+    const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Long);
     
     context.save();    
-    // Calculate the angle of the line
-    let angle = Math.atan2((endPixel.y - startPixel.y), (endPixel.x - startPixel.x));
     
-    if (Math.abs(angle) > 1.5) {
-        angle = angle + 3.1415
-    }
     
-    context.translate((startPixel.x + endPixel.x)/ 2, (startPixel.y + endPixel.y)/ 2);
-    context.rotate(angle);
+    context.translate(centerPixel.x, centerPixel.y);
     
     // Add box names as text labels aligned with the lines
     context.fillStyle = 'black';
     context.font = '10px Arial';
     context.textAlign = 'center';
-    
-    // Calculate the text position along the line
-    const textX = 0//(startPixel.x * 50 + endPixel.x * 50) / 2 + Math.cos(angle) * 15; // Offset by 15 pixels along the line
-    const textY = 0//(startPixel.y * 50 + endPixel.y * 50) / 2 + Math.sin(angle) * 15; // Offset by 15 pixels along the line
-    
-    context.fillText(box.Section_Name, 0, 10);
+
+    context.fillText(box.Box_Name, 0, 10);
     
     context.restore();
 }
@@ -158,22 +136,13 @@ function drawBoxes() {
     
     boxes.forEach((box, index) => {
         // Convert latitude and longitude to pixel coordinates
-        const startPixel = convertLatLngToCanvasPixel(box.yi, box.xi);
-        const endPixel = convertLatLngToCanvasPixel(box.yf, box.xf);
+        const centerPixel = convertLatLngToCanvasPixel(box.Lat, box.Long);
         
-        context.beginPath();
-        context.moveTo(startPixel.x, startPixel.y);
-        context.lineTo(endPixel.x, endPixel.y);
-        context.stroke();
-        
-        // Draw dots at the beginning and end
+        // Draw dots
         const dotRadius = 5;
         context.fillStyle = 'black'; // Dot color
         context.beginPath();
-        context.arc(startPixel.x, startPixel.y, dotRadius, 0, Math.PI * 2);
-        context.fill();
-        context.beginPath();
-        context.arc(endPixel.x, endPixel.y, dotRadius, 0, Math.PI * 2);
+        context.arc(centerPixel.x, centerPixel.y, dotRadius, 0, Math.PI * 2);
         context.fill();
         
         if (showNamesCheckbox.checked){
@@ -313,85 +282,50 @@ function createChart(canvas_name, data_x, data_y, x_label, y_label, data_title) 
 	)};
 }
 
-
-
-function setChartVizualizeMode(road) {
-    console.log(`DEBUGGING - setChartVizualizeMode - ${road['Section_Name']}`);
+function setChartVizualizeMode(box) {
+    console.log(`DEBUGGING - setChartVizualizeMode - ${box['Section_Name']}`);
     performance_indicators.innerHTML = "";
-    createChart('performanceChart', [], [], 'Year', '', road['Section_Name']);
+    createChart('performanceChart', [], [], 'Year', '', box['Section_Name']);
     
-    EDP_PI_List = ['EDP', 'PI'];
     
-    EDPList = ['Cracking', 'Surface_Defects', 'Transverse_Evenness', 'Longitudinal_Evenness', 'Skid_Resistance', 
-              //'Macro_Texture', 'Bearing_Capacity'
-              ];
-    PIList = ['123', '123', '423'];
+    EDPList = Object.keys(box.inspections[0]);
+    EDPList = EDPList.filter(function(item) {return item !== "Box_Name" })
+    EDPList = EDPList.filter(function(item) {return item !== "Datetime"})
     
-    PIList = ['Cracking_ASFiNAG', 'Surface_Defects_ASFiNAG', 'Transverse_Evenness_ASFiNAG', 'Longitudinal_Evenness_ASFiNAG', 'Skid_Resistance_ASFiNAG', 'Bearing_Capacity_ASFiNAG',
-              'Safety_ASFiNAG',	'Comfort_ASFiNAG',	'Functional_ASFiNAG', 'Surface_Structural_ASFiNAG', 'Structural_ASFiNAG', 'Global_ASFiNAG'
-              ];
     
-    // Create a selection which the user can select if he wants to see the EDP or transformed indicators.
-    const EDP_PI = document.createElement("select");
-    EDP_PI.name = "EDP_PI";
-    EDP_PI.id = "EDP_PI";
-    
-    const option_1 = document.createElement("option");
-    option_1.value = 'Select';
-    option_1.text = 'Select';
-    EDP_PI.add(option_1);
-    
-    for (let i = 0; i < EDP_PI_List.length; i++) {
-        const option1 = document.createElement("option");
-        option1.value = EDP_PI_List[i];
-        option1.text = EDP_PI_List[i];
-        EDP_PI.add(option1);
-        performance_indicators.appendChild(EDP_PI);
+    if (performance_indicators.childElementCount > 1) {
+        performance_indicators.removeChild(performance_indicators.lastChild);
     }
     
-    // based on the selection of the user, shows the EDP or PI list
-    EDP_PI.addEventListener('change', () => {
-        console.log(`DEBUGGING - change_EDP_PI - ${document.getElementById("EDP_PI").value}`);
+    const indicator = document.createElement("select");
+    indicator.name = "indicator";
+    indicator.id = "indicator";
+    
+    const option_ = document.createElement("option");
+    option_.value = 'Select indicator';
+    option_.text = 'Select indicator';
+    indicator.add(option_);
+    
+    let lista = []
+    
+    lista = EDPList;
+    
+    for (let i = 0; i < lista.length; i++) {
+        const option1 = document.createElement("option");
+        option1.value = lista[i];
+        option1.text = lista[i];
+        indicator.add(option1);
+        performance_indicators.appendChild(indicator);
+    }
+    indicator.addEventListener('change', () => {
+        console.log(`DEBUGGING - change_PI - ${document.getElementById("indicator").value}`);
         
-        if (performance_indicators.childElementCount > 1) {
-            performance_indicators.removeChild(performance_indicators.lastChild);
-        }
+        const performance_indicator = document.getElementById("indicator").value;
         
-        const indicator = document.createElement("select");
-        indicator.name = "indicator";
-        indicator.id = "indicator";
-        
-        const option_ = document.createElement("option");
-        option_.value = 'Select indicator';
-        option_.text = 'Select indicator';
-        indicator.add(option_);
-        
-        let lista = []
-        
-        if (document.getElementById("EDP_PI").value == 'EDP') {
-            lista = EDPList;
-        };
-        
-        if (document.getElementById("EDP_PI").value == 'PI') {
-            lista = PIList;
-        };
-        
-        for (let i = 0; i < lista.length; i++) {
-            const option1 = document.createElement("option");
-            option1.value = lista[i];
-            option1.text = lista[i];
-            indicator.add(option1);
-            performance_indicators.appendChild(indicator);
-        }
-        indicator.addEventListener('change', () => {
-            console.log(`DEBUGGING - change_PI - ${document.getElementById("indicator").value}`);
-            
-            const performance_indicator = document.getElementById("indicator").value;
-            
-            let dates =  road['inspections'].map(obj => obj.Date)//.map(date => new Date(date));
-            let performance =  road['inspections'].map(obj => obj[performance_indicator]);
-            
-            createChart('performanceChart', dates, performance, 'Year', performance_indicator, road['Section_Name']);
-        });
+        let dates =  box['inspections'].map(obj => obj.Datetime)//.map(date => new Date(date));
+        let performance =  box['inspections'].map(obj => obj[performance_indicator]);
+        console.log(dates);
+        createChart('performanceChart', dates, performance, 'Year', performance_indicator, box['Section_Name']);
     });
+
 };
