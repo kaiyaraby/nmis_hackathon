@@ -1,0 +1,56 @@
+/* General Page Styles */
+.home-body {
+    font-family: Arial, sans-serif; /* Change to your preferred font */
+    color: #333; /* Standard text color */
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Full viewport height */
+}
+
+/* Title Styles */
+.home-title {
+    font-size: 2.5em; /* Large font size for the title */
+    font-weight: bold; /* Bold font weight */
+    color: #0047ab; /* Deep blue color, adjust as needed */
+    text-align: center; /* Center align the title */
+    margin-top: 20px; /* Spacing above the title */
+    opacity: 0; /* Start with the title invisible */
+    animation: home-fadeIn 2s ease forwards; /* Fade-in animation */
+}
+
+/* Fade-in Animation */
+@keyframes home-fadeIn {
+    to {
+        opacity: 1; /* End with the title fully visible */
+    }
+}
+
+/* Image Container */
+.image-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Image Styles */
+.home-image {
+    max-width: 100%; /* Ensures image is responsive and fits in the container */
+    height: auto; /* Maintain aspect ratio */
+    border: 3px solid #0047ab; /* Blue border */
+    transition: transform 0.3s ease; /* Smooth transform on hover */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-image:hover {
+    transform: scale(1.1); /* Slight zoom on hover */
+}
+
+.content-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+}
