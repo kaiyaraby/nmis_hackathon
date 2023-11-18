@@ -16,6 +16,7 @@
   margin-top: 20px; /* Spacing above the title */
   opacity: 0; /* Start with the title invisible */
   animation: home-fadeIn 2s ease forwards; /* Fade-in animation */
+  margin: 20px;
 }
 
 /* Fade-in Animation */
@@ -150,5 +151,26 @@
     margin-bottom: 40px;
     border-radius: 2px; /* Slightly rounded corners */
   }
+
+  /* Additional Images Container */
+.additional-images-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Spacing between images */
+    margin: 20px 0; /* Vertical spacing around the container */
+  }
   
+  /* Styles for Additional Images */
+  .additional-home-image {
+    width: 45%; /* Adjust the width as needed */
+    height: auto;
+    border: 3px solid #00122c;
+    border-radius: 15px; /* Rounded corners */
+    transition: transform 0.3s ease;
+    display: block;
+  }
+  
+  .additional-home-image:hover {
+    transform: scale(1.1); /* Zoom effect on hover */
+  }
   
