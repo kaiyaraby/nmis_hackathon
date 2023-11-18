@@ -16,6 +16,10 @@
         <input type="checkbox" checked=True id="show-section-names" style="text-align: left;"> Show Names
     </label>
     
+    <label>
+        <input type="checkbox" id="show-contour" style="text-align: left;"> Show Contour
+    </label>
+    
     <div id="big_div">
         <!-- MAP -->
         <div id='map_container' class="map_container">
@@ -44,6 +48,9 @@
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
 
+<!-- Include Leaflet-Heat library -->
+<script src="https://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script>
+
 <script>
         // Initialize the map
         const map = L.map('map_container').setView([55.857923, -4.248164], 14);
@@ -63,6 +70,47 @@
 
         // Set the map's max bounds to restrict panning and zooming
         map.setMaxBounds(bounds)
+        
+        // Example data for contour plot
+        const contourData = [
+            [55.8611666, -4.255036, 0.0459650124710456],
+            [55.8567839, -4.2542592, 0.747288532991894],
+            [55.8612746, -4.2607426, 0.283960706805857],
+            [55.8553413, -4.2579352, 0.709081097695903],
+            [55.856962, -4.2508831, 0.624699400483121],
+            [55.8596991, -4.2510207, 0.505508193246486],
+            [55.8600017, -4.2565153, 0.99282378515905],
+            [55.858949, -4.2484797, 0.63490707398358],
+            [55.8567629, -4.2578129, 0.240243434069808],
+            [55.8584965, -4.2570707, 0.395823159729074],
+            [55.8575769, -4.2471082, 0.426504701736152],
+            [55.8560143, -4.24820727, 0.978593379402183],
+            [55.8543702, -4.2540772, 0.422991022312886],
+            [55.8584154, -4.2567481, 0.391294371012047],
+            [55.8545429, -4.2503437, 0.938496260509715],
+        ];
+
+        // Create an array of LatLng objects from the contourData
+        const heatData = contourData.map(point => new L.LatLng(point[0], point[1]));
+        
+        const heatLayer = L.heatLayer(heatData, { radius: 30}).addTo(map);
+        
+        // Function to toggle the visibility of the contour plot
+        function toggleContourPlot() {
+            const checkbox = document.getElementById('show-contour');
+            if (checkbox.checked) {
+                // Create a transparent heatmap layer and add it to the map
+                // If checked, add the heatmap layer to the map
+                heatLayer.addTo(map);
+            } else {
+                // If not checked, remove the heatmap layer from the map
+                map.removeLayer(heatLayer);
+            }
+        }
+
+        // Add event listener to the checkbox
+        toggleContourPlot();
+        document.getElementById('show-contour').addEventListener('change', toggleContourPlot);
 </script>
 
 <script src="{{url_for('static', filename='map.js')}}"></script>

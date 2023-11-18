@@ -14,6 +14,9 @@ let boxeselected = null;
 showNamesCheckbox.addEventListener('change', drawBoxes);
 
 
+// Add event listener to the checkbox
+document.getElementById('show-contour').addEventListener('change', toggleContourPlot);
+
 // Function to check if a point (x, y) is close to a line segment defined by (x1, y1) and (x2, y2)
 function isPointNearLine(x, y, x1, y1, tolerance = 5) {
     const distance = Math.sqrt((x - x1) ** 2 + (y - y1) ** 2);
@@ -153,6 +156,7 @@ function drawBoxes() {
         canvas.addEventListener('mousemove', handleMouseMove);
     });
 }
+
 
 // Function to display box information in a table within the infoDiv
 // window.addEventListener('load', displayboxInfo);

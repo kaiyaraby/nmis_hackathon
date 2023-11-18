@@ -45,3 +45,7 @@
     max-height: 30px; /* Adjust the size of the logo as needed */
     width: auto; /* Maintain aspect ratio */
 }
+
+.leaflet-heatmap-layer {
+opacity: .5;
+}
